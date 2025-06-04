@@ -16,7 +16,7 @@ def get_data():
 
         keywords = dict_data.get("keywords")
         proxies = dict_data.get("proxies")
-        search_type = dict_data.get("type")
+        search_type = dict_data.get("type").lower()
 
         # Basic validation
         if not isinstance(keywords, list):
@@ -28,11 +28,12 @@ def get_data():
 
         allowed_types = ["repositories", "issues", "wikis"]
 
-        if search_type.lower() not in allowed_types:
-            raise ValueError("type must be one of {}".format(allowed_types))
+        if search_type not in allowed_types:
+            raise ValueError(f"type must be one of {allowed_types}")
 
         logger.info(
-            f"Data validated: keywords={keywords}, proxies={proxies}, type={search_type}"
+            f"Data validated: keywords={keywords}, "
+            f"proxies={proxies}, type={search_type}"
         )
         return keywords, proxies, search_type
 

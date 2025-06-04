@@ -1,3 +1,4 @@
+from urllib.parse import quote_plus
 from bs4 import BeautifulSoup
 import requests
 
@@ -6,16 +7,16 @@ from utils.logger import logger
 
 def build_search_url(keywords, search_type):
     """
-    Build a GitHub search URL using provided keywords and type (e.g., Repositories).
+    Build a GitHub search URL using provided keywords and type.
     """
     base_url = "https://github.com/search"
-    query = "+".join(keywords)
+    query = quote_plus(" ".join(keywords))  # handles spaces
     url = f"{base_url}?q={query}&type={search_type}"
     logger.info(f"Search URL built: {url}")
     return url
 
 
-def test_proxy(
+def check_proxy(
     proxy: str, test_url="http://httpbin.org/ip", timeout=3
 ) -> bool:
     """
@@ -46,13 +47,13 @@ def get_soup(url, proxy=None):
     and return a parsed BeautifulSoup object.
     """
     if proxy:
-        if not test_proxy(proxy):
+        if not check_proxy(proxy):
             logger.error(f"Proxy {proxy} is not working. Aborting.")
             raise Exception(f"Proxy {proxy} is not working")
     # if no proxy, stop the script
     else:
-        logger.error(f"No proxy specified. Aborting.")
-        raise Exception(f"No proxy specified.")
+        logger.error("No proxy specified. Aborting.")
+        raise Exception("No proxy specified.")
 
     try:
         response = requests.get(
